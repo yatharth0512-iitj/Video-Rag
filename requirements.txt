@@ -1,0 +1,12 @@
+streamlit
+yt-dlp
+ffmpeg-python
+whisper
+webvtt-py
+transformers
+torch
+Pillow
+opencv-python
+chromadb
+sentence-transformers
+numpy
