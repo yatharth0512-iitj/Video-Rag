@@ -7,10 +7,14 @@ Generator: A model, typically a language model like GPT or BERT, that generates 
 RAG allows the generation of answers or content by leveraging external knowledge (retrieved documents) to improve the quality and accuracy of the generated output. It is particularly useful in situations where the model's internal knowledge might be limited or outdated, or when the task requires highly specific information that would be hard for a standalone model to memorize.
 
 ### How it Works:
-Step 1: Query and Retrieve: Given a user query, the retriever searches a knowledge base (like a vector database) to find the most relevant documents or information.
-Step 2: Generate Output: The generator uses the retrieved information to generate a more informed response, incorporating details from the knowledge base.
-RAG is commonly used in tasks like question answering, document generation, summarization, and more, as it allows the model to work with external information in real time. 
 
+**Step 1: Query and Retrieve:**  
+Given a user query, the retriever searches a knowledge base (like a vector database) to find the most relevant documents or information.  
+
+**Step 2: Generate Output:**  
+The generator uses the retrieved information to generate a more informed response, incorporating details from the knowledge base.  
+
+RAG is commonly used in tasks like question answering, document generation, summarization, and more, as it allows the model to work with external information in real time.
 
 # Video Metadata Processing and Retrieval Pipeline
 
