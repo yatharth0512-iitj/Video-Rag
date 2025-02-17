@@ -50,41 +50,18 @@ This pipeline efficiently processes video metadata by chunking, embedding, stori
   - Searches for similar embeddings in the `ChromaDB`.
   - Returns relevant transcript sections along with video details.
 
-### **5. Process and Query Functions**
-- **`process_all_metadata_for_vectordb(metadata_dir)`**
-  - Loads all metadata JSON files from the given directory.
-  - Uses `MetadataChunker` to generate chunks.
-  - Computes embeddings and stores them in the vector database.
-  
-- **`query_vectordb(query)`**
-  - Retrieves relevant video transcript sections based on the given query.
-  - Displays video URIs and timestamps for easy reference.
 
----
+## Installation
 
-## **How to Run**
+1. **Clone the given repository.**
 
-Follow the steps below to run the pipeline:
+2. **Install Dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### **1. Set Up the Environment**
-
-First, create a virtual environment (optional but recommended):
-
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows, use venv\Scripts\activate
-```
-
-### **2. Install Dependencies**
-
-Install the required dependencies using the `requirements.txt` file. Create the `requirements.txt` with the following contents:
-
-```bash
-pip install -r requirements.txt
-```
-
-To run the Streamlit application, execute:
-
-```bash
-streamlit run app.py
-```
+3. **Run the App**
+    ```bash
+    streamlit run app.py
+    ```
+    
