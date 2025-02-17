@@ -2,8 +2,10 @@
 What is RAG (Retrieval-Augmented Generation)?
 Retrieval-Augmented Generation (RAG) is a technique that enhances the performance of language models by combining two powerful components:
 
-Retriever: A model or process that searches a large database (e.g., a corpus of documents or knowledge base) for relevant information based on a given query.
-Generator: A model, typically a language model like GPT or BERT, that generates responses or outputs based on the retrieved information.
+**Retriever**: A model or process that searches a large database (e.g., a corpus of documents or knowledge base) for relevant information based on a given query.
+
+**Generator**: A model, typically a language model like GPT or BERT, that generates responses or outputs based on the retrieved information.
+
 RAG allows the generation of answers or content by leveraging external knowledge (retrieved documents) to improve the quality and accuracy of the generated output. It is particularly useful in situations where the model's internal knowledge might be limited or outdated, or when the task requires highly specific information that would be hard for a standalone model to memorize.
 
 ### How it Works:
@@ -15,7 +17,7 @@ Given a user query, the retriever searches a knowledge base (like a vector datab
 The generator uses the retrieved information to generate a more informed response, incorporating details from the knowledge base.  
 
 RAG is commonly used in tasks like question answering, document generation, summarization, and more, as it allows the model to work with external information in real time.
-
+![RAG Diagram](rag.png)
 # Video Metadata Processing and Retrieval Pipeline
 
 This pipeline efficiently processes video metadata by chunking, embedding, storing, and retrieving relevant information using state-of-the-art tools. It is implemented through the following modular components:
