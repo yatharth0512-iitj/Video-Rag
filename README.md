@@ -1,5 +1,7 @@
-# WHAT IS RAG ? 
-What is RAG (Retrieval-Augmented Generation)?
+# ChromaWhisper
+
+**What is RAG (Retrieval-Augmented Generation)**?
+
 Retrieval-Augmented Generation (RAG) is a technique that enhances the performance of language models by combining two powerful components:
 
 **Retriever**: A model or process that searches a large database (e.g., a corpus of documents or knowledge base) for relevant information based on a given query.
