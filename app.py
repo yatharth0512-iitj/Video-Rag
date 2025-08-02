@@ -4,7 +4,7 @@ import re
 import requests
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
 from qdrant_client import QdrantClient
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.vector_stores.qdrant import QdrantVectorStore
@@ -125,7 +125,7 @@ def get_youtube_transcript(video_id):
 
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(
-            video_id, 
+            video_id,
             proxies={
                 "http": proxy_url,
                 "https": proxy_url
@@ -138,6 +138,9 @@ def get_youtube_transcript(video_id):
         return None
     except NoTranscriptFound:
         st.error("❌ No transcripts available for this video.")
+        return None
+    except VideoUnavailable:
+        st.error("❌ Video is unavailable or private.")
         return None
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
