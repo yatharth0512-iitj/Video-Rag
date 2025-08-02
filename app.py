@@ -132,7 +132,7 @@ def get_youtube_transcript(video_id):
 
     try:
         # Use the correct method name
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = YouTubeTranscriptApi().fetch(video_id, languages=['en'])
         return " ".join([entry['text'] for entry in transcript])
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
