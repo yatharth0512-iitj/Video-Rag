@@ -4,7 +4,7 @@ import re
 import requests
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
-
+from youtube_transcript_api.exceptions import TranscriptsDisabled, NoTranscriptFound
 from qdrant_client import QdrantClient
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.vector_stores.qdrant import QdrantVectorStore
@@ -116,14 +116,32 @@ def extract_video_id(url):
 
 
 def get_youtube_transcript(video_id):
+    SCRAPERAPI_KEY = os.getenv("SCRAPERAPI_KEY")
+    if not SCRAPERAPI_KEY:
+        st.error("❌ Missing ScraperAPI key!")
+        return None
+
+    proxy_url = f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001"
+
     try:
-        transcript_list = YouTubeTranscriptApi().fetch(video_id, languages=['en'])
-        return " ".join(entry['text'] if isinstance(entry, dict) else str(entry)
-                        for entry in transcript_list)
+        transcript_list = YouTubeTranscriptApi.get_transcript(
+            video_id, 
+            proxies={
+                "http": proxy_url,
+                "https": proxy_url
+            }
+        )
+        return " ".join(entry['text'] for entry in transcript_list)
+
+    except TranscriptsDisabled:
+        st.error("❌ Transcripts are disabled for this video.")
+        return None
+    except NoTranscriptFound:
+        st.error("❌ No transcripts available for this video.")
+        return None
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
         return None
-
 
 def loadYoutubeURL(url):
     video_id = extract_video_id(url)
