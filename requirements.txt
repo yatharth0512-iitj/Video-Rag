@@ -1,4 +1,4 @@
-streamlit>=1.28.0
+streamlit
 llama-index
 llama-index-llms-huggingface
 llama-index-embeddings-huggingface
@@ -7,6 +7,5 @@ qdrant-client
 youtube-transcript-api
 python-dotenv
 huggingface_hub
---index-url https://download.pytorch.org/whl/cpu
+sentence-transformers
 torch
-sentence-transformers>=2.6.1
