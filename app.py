@@ -3,7 +3,6 @@ import os
 import re
 import requests
 from dotenv import load_dotenv
-from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
 from qdrant_client import QdrantClient
 from llama_index.core import VectorStoreIndex, Document, Settings
@@ -42,30 +41,23 @@ class HFRemoteLLM(CustomLLM):
             return CompletionResponse(text=f"Error from Hugging Face API: {e}")
 
 # ----------------- QDRANT -----------------
-# Use cloud Qdrant.
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", None)
 
 if QDRANT_API_KEY:
-    # Use cloud Qdrant
-    qdrant_client = QdrantClient(
-        url=QDRANT_URL,
-        api_key=QDRANT_API_KEY
-    )
+    qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
     st.success("✅ Connected to Qdrant Cloud")
 else:
-    # Use local Qdrant (for development)
     qdrant_client = QdrantClient(url=QDRANT_URL)
     st.info("ℹ️ Using local Qdrant (for cloud deployment, set QDRANT_URL and QDRANT_API_KEY)")
 
-# Set up the LLM
+# ----------------- LLM SETUP -----------------
 try:
     client = InferenceClient(
         provider="novita",
-        api_key=os.getenv("HF_TOKEN"),
+        api_key=HF_TOKEN,
     )
-    
-    # Create a custom LLM wrapper for llama-index
+
     class GLM4LLM(CustomLLM):
         @property
         def metadata(self) -> LLMMetadata:
@@ -83,11 +75,11 @@ try:
                 return CompletionResponse(text=text_output)
             except Exception as e:
                 return CompletionResponse(text=f"Error: {e}")
-        
+
         def stream_complete(self, prompt: str, **kwargs):
             response = self.complete(prompt, **kwargs)
             yield response
-    
+
     llm = GLM4LLM()
     Settings.llm = llm
     st.success("✅ Using GLM-4.5 via Novita Inference Client")
@@ -107,7 +99,6 @@ except Exception as e:
     st.error(f"❌ Embedding model setup failed: {e}")
     Settings.embed_model = None
 
-
 # ----------------- HELPERS -----------------
 def extract_video_id(url):
     pattern = r'(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)'
@@ -121,22 +112,34 @@ def get_youtube_transcript(video_id):
         st.error("❌ Missing ScraperAPI key!")
         return None
 
-    # Set up global proxy for requests
-    proxies = {
-        "http": f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001",
-        "https": f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001",
-    }
-    
-    # Patch requests to use proxies
-    requests.Session.proxies = proxies
+    proxy_url = f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001"
+
+    # Monkey-patch requests.get to use the proxy
+    original_get = requests.get
+    def proxy_get(url, **kwargs):
+        kwargs["proxies"] = {"http": proxy_url, "https": proxy_url}
+        return original_get(url, **kwargs)
+
+    requests.get = proxy_get
 
     try:
-        # Use the correct method name
-        transcript = YouTubeTranscriptApi().fetch(video_id, languages=['en'])
+        transcript = YouTubeTranscriptApi.fetch(video_id, languages=['en'])
         return " ".join([entry['text'] for entry in transcript])
+    except TranscriptsDisabled:
+        st.error("❌ Transcripts are disabled for this video.")
+        return None
+    except NoTranscriptFound:
+        st.error("❌ No transcript available for this video.")
+        return None
+    except VideoUnavailable:
+        st.error("❌ This video is unavailable or private.")
+        return None
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
         return None
+    finally:
+        requests.get = original_get  # Restore original function
+
 
 def loadYoutubeURL(url):
     video_id = extract_video_id(url)
@@ -146,7 +149,6 @@ def loadYoutubeURL(url):
 
     with st.spinner("⏳ Loading Index..."):
         try:
-            # Clear all existing collections first
             collections = [c.name for c in qdrant_client.get_collections().collections]
             for collection_name in collections:
                 try:
@@ -154,8 +156,7 @@ def loadYoutubeURL(url):
                     st.info(f"🗑️ Cleared existing collection: {collection_name}")
                 except Exception as e:
                     st.warning(f"⚠️ Could not clear collection {collection_name}: {e}")
-            
-            # Create new collection for this video
+
             collection_name = f"yt_{video_id}"
             vector_store = QdrantVectorStore(client=qdrant_client, collection_name=collection_name)
 
@@ -173,10 +174,8 @@ def loadYoutubeURL(url):
                 chat_mode="condense_question", streaming=True, verbose=True
             )
             st.success("✅ Video processed successfully!")
-
         except Exception as e:
             st.error(f"❌ Error processing video: {e}")
-
 
 # ----------------- UI -----------------
 st.title("🎥 YouTube Video RAG Chat (GLM-4.5 + Qdrant)")
