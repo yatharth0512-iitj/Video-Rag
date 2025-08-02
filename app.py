@@ -42,8 +42,8 @@ class HFRemoteLLM(CustomLLM):
             return CompletionResponse(text=f"Error from Hugging Face API: {e}")
 
 # ----------------- QDRANT -----------------
-# Use cloud Qdrant if QDRANT_URL is provided, otherwise use local
-QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
+# Use cloud Qdrant.
+QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", None)
 
 if QDRANT_API_KEY:
