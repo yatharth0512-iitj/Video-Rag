@@ -4,7 +4,7 @@ import re
 import requests
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api.exceptions import TranscriptsDisabled, NoTranscriptFound
+from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound
 from qdrant_client import QdrantClient
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.vector_stores.qdrant import QdrantVectorStore
