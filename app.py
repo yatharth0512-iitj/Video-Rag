@@ -121,29 +121,19 @@ def get_youtube_transcript(video_id):
         st.error("❌ Missing ScraperAPI key!")
         return None
 
-    # Use ScraperAPI REST API to get YouTube page
-    youtube_url = f"https://www.youtube.com/watch?v={video_id}"
-    
-    payload = {
-        'api_key': SCRAPERAPI_KEY,
-        'url': youtube_url
+    # Set up global proxy for requests
+    proxies = {
+        "http": f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001",
+        "https": f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001",
     }
     
+    # Patch requests to use proxies
+    requests.Session.proxies = proxies
+
     try:
-        # Get the YouTube page through ScraperAPI
-        response = requests.get('https://api.scraperapi.com/', params=payload)
-        
-        if response.status_code != 200:
-            st.error(f"❌ ScraperAPI error: {response.status_code}")
-            return None
-            
-        # Now use YouTubeTranscriptApi to parse the transcript
-        transcript_list = YouTubeTranscriptApi().fetch(
-            video_id, 
-            languages=['en']
-        )
-        return " ".join(entry['text'] if isinstance(entry, dict) else str(entry) 
-                        for entry in transcript_list)
+        # Use the correct method name
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        return " ".join([entry['text'] for entry in transcript])
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
         return None
