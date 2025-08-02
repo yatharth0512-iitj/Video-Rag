@@ -46,10 +46,8 @@ QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", None)
 
 if QDRANT_API_KEY:
     qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
-    st.success("✅ Connected to Qdrant Cloud")
 else:
     qdrant_client = QdrantClient(url=QDRANT_URL)
-    st.info("ℹ️ Using local Qdrant (for cloud deployment, set QDRANT_URL and QDRANT_API_KEY)")
 
 # ----------------- LLM SETUP -----------------
 try:
@@ -82,9 +80,7 @@ try:
 
     llm = GLM4LLM()
     Settings.llm = llm
-    st.success("✅ Using GLM-4.5 via Novita Inference Client")
 except Exception as e:
-    st.error(f"❌ GLM-4.5 setup failed: {e}")
     Settings.llm = None
 
 # ----------------- EMBEDDINGS -----------------
@@ -94,9 +90,7 @@ try:
         device="cpu"
     )
     Settings.embed_model = embed_model
-    st.success("✅ HuggingFace embeddings loaded successfully")
 except Exception as e:
-    st.error(f"❌ Embedding model setup failed: {e}")
     Settings.embed_model = None
 
 # ----------------- HELPERS -----------------
@@ -160,12 +154,10 @@ def loadYoutubeURL(url):
             collection_name = f"yt_{video_id}"
             vector_store = QdrantVectorStore(client=qdrant_client, collection_name=collection_name)
 
-            st.info("🔄 Creating new index in Qdrant...")
             transcript = get_youtube_transcript(video_id)
             if transcript:
                 document = Document(text=transcript)
                 index = VectorStoreIndex.from_documents([document], vector_store=vector_store)
-                st.success("💾 Index stored in Qdrant!")
             else:
                 st.error("❌ No transcript available")
                 return
@@ -173,16 +165,43 @@ def loadYoutubeURL(url):
             st.session_state["chat_engine"] = index.as_chat_engine(
                 chat_mode="condense_question", streaming=True, verbose=True
             )
-            st.success("✅ Video processed successfully!")
         except Exception as e:
             st.error(f"❌ Error processing video: {e}")
 
 # ----------------- UI -----------------
-st.title("🎥 YouTube Video RAG Chat (GLM-4.5 + Qdrant)")
+st.title("🎥 YouTube Video RAG")
 
-with st.sidebar:
-    urlTextValue = st.text_input(label="🔗 YouTube URL")
-    if st.button(label="Load URL"):
+# Add informative content about RAG
+st.markdown("""
+### What is RAG (Retrieval-Augmented Generation)?
+
+RAG is an AI technique that combines the power of large language models with external knowledge sources. 
+It works by:
+
+🔍 **Retrieval**: Finding relevant information from a knowledge base (in this case, YouTube video transcripts)
+🧠 **Generation**: Using AI to generate accurate, contextual responses based on the retrieved information
+
+### How it works with YouTube videos:
+
+1. **Upload**: Paste any YouTube video URL
+2. **Process**: The system extracts and analyzes the video's transcript
+3. **Chat**: Ask questions about the video content and get intelligent responses
+
+### Benefits:
+- ✅ **Accurate Answers**: Responses are based on actual video content
+- ✅ **Context Awareness**: AI understands the video's context and topics
+- ✅ **Less Hallucinations**: Information comes directly from the source
+- ✅ **Interactive Learning**: Perfect for educational videos, tutorials, and presentations
+
+---
+
+""")
+
+# Center the URL input
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    urlTextValue = st.text_input(label="🔗 YouTube URL", placeholder="Paste your YouTube URL here...")
+    if st.button(label="Load Video", use_container_width=True):
         if urlTextValue:
             loadYoutubeURL(urlTextValue)
         else:
@@ -204,9 +223,11 @@ if st.session_state.messages[-1]["role"] != "assistant":
             if "chat_engine" in st.session_state:
                 try:
                     response = st.session_state["chat_engine"].chat(prompt)
-                    st.write(response.response)
+                    # Clean the response to remove <think> tags
+                    clean_response = response.response.replace('<think>', '').replace('</think>', '').strip()
+                    st.write(clean_response)
                     st.session_state.messages.append(
-                        {"role": "assistant", "content": response.response}
+                        {"role": "assistant", "content": clean_response}
                     )
                 except Exception as e:
                     st.error(f"❌ Error generating response: {e}")
