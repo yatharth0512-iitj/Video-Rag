@@ -123,7 +123,7 @@ def get_youtube_transcript(video_id):
     requests.get = proxy_get
 
     try:
-        transcript = YouTubeTranscriptApi.fetch(video_id, languages=['en'])
+        transcript = YouTubeTranscriptApi.fetch(video_id)
         return " ".join([entry['text'] for entry in transcript])
     except TranscriptsDisabled:
         st.error("❌ Transcripts are disabled for this video.")
