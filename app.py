@@ -124,24 +124,16 @@ def get_youtube_transcript(video_id):
     proxy_url = f"http://scraperapi:{SCRAPERAPI_KEY}@proxy-server.scraperapi.com:8001"
 
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(
-            video_id,
+        transcript_list = YouTubeTranscriptApi().fetch(
+            video_id, 
+            languages=['en'],
             proxies={
                 "http": proxy_url,
                 "https": proxy_url
             }
         )
-        return " ".join(entry['text'] for entry in transcript_list)
-
-    except TranscriptsDisabled:
-        st.error("❌ Transcripts are disabled for this video.")
-        return None
-    except NoTranscriptFound:
-        st.error("❌ No transcripts available for this video.")
-        return None
-    except VideoUnavailable:
-        st.error("❌ Video is unavailable or private.")
-        return None
+        return " ".join(entry['text'] if isinstance(entry, dict) else str(entry) 
+                        for entry in transcript_list)
     except Exception as e:
         st.error(f"❌ Error fetching transcript: {e}")
         return None
