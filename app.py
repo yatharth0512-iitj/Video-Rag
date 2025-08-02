@@ -169,39 +169,108 @@ def loadYoutubeURL(url):
             st.error(f"❌ Error processing video: {e}")
 
 # ----------------- UI -----------------
-st.title("🎥 YouTube Video RAG")
+
+# Main title with gradient effect
+st.markdown("""
+<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; margin-bottom: 30px;">
+    <h1 style="color: white; margin: 0; font-size: 2.5em;">🎥 YouTube Video RAG</h1>
+    <p style="color: white; margin: 10px 0 0 0; font-size: 1.2em;">Transform any YouTube video into an interactive AI assistant</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Add informative content about RAG
 st.markdown("""
-### What is RAG (Retrieval-Augmented Generation)?
+<div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 25px; border-radius: 15px; margin: 20px 0;">
+    <h3 style="color: #2c3e50; margin-top: 0;">🚀 What is RAG (Retrieval-Augmented Generation)?</h3>
+    <p style="color: #34495e; font-size: 1.1em;">RAG is an AI technique that combines the power of large language models with external knowledge sources.</p>
+    
+    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+        <div style="text-align: center; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #e74c3c; margin: 0;">🔍 Retrieval</h4>
+            <p style="margin: 5px 0 0 0;">Finding relevant information from video transcripts</p>
+        </div>
+        <div style="text-align: center; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #3498db; margin: 0;">🧠 Generation</h4>
+            <p style="margin: 5px 0 0 0;">AI generates contextual responses</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-RAG is an AI technique that combines the power of large language models with external knowledge sources. 
-It works by:
+# How it works section
+st.markdown("""
+<div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 25px; border-radius: 15px; margin: 20px 0;">
+    <h3 style="color: #2c3e50; margin-top: 0;">📋 How it works with YouTube videos:</h3>
+    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+        <div style="text-align: center; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #27ae60; margin: 0;">1️⃣ Upload</h4>
+            <p style="margin: 5px 0 0 0;">Paste any YouTube video URL</p>
+        </div>
+        <div style="text-align: center; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #f39c12; margin: 0;">2️⃣ Process</h4>
+            <p style="margin: 5px 0 0 0;">System extracts and analyzes transcript</p>
+        </div>
+        <div style="text-align: center; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #9b59b6; margin: 0;">3️⃣ Chat</h4>
+            <p style="margin: 5px 0 0 0;">Ask questions and get intelligent responses</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-🔍 **Retrieval**: Finding relevant information from a knowledge base (in this case, YouTube video transcripts)
-🧠 **Generation**: Using AI to generate accurate, contextual responses based on the retrieved information
+# Benefits section
+st.markdown("""
+<div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 25px; border-radius: 15px; margin: 20px 0;">
+    <h3 style="color: #2c3e50; margin-top: 0;">✨ Benefits:</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+        <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #27ae60; margin: 0;">✅ Accurate Answers</h4>
+            <p style="margin: 5px 0 0 0;">Responses based on actual video content</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #3498db; margin: 0;">✅ Context Awareness</h4>
+            <p style="margin: 5px 0 0 0;">AI understands video context and topics</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #e74c3c; margin: 0;">✅ Less Hallucinations</h4>
+            <p style="margin: 5px 0 0 0;">Information comes directly from source</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h4 style="color: #9b59b6; margin: 0;">✅ Interactive Learning</h4>
+            <p style="margin: 5px 0 0 0;">Perfect for educational content</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-### How it works with YouTube videos:
+# Special URL input section
+st.markdown("""
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; margin: 30px 0; text-align: center;">
+    <h2 style="color: white; margin: 0 0 20px 0; font-size: 1.8em;">🎬 Ready to Get Started?</h2>
+    <p style="color: white; margin: 0 0 25px 0; font-size: 1.1em;">Paste your YouTube URL below and transform it into an interactive AI assistant</p>
+</div>
+""", unsafe_allow_html=True)
 
-1. **Upload**: Paste any YouTube video URL
-2. **Process**: The system extracts and analyzes the video's transcript
-3. **Chat**: Ask questions about the video content and get intelligent responses
-
-### Benefits:
-- ✅ **Accurate Answers**: Responses are based on actual video content
-- ✅ **Context Awareness**: AI understands the video's context and topics
-- ✅ **Less Hallucinations**: Information comes directly from the source
-- ✅ **Interactive Learning**: Perfect for educational videos, tutorials, and presentations
-
----
-
-""")
-
-# Center the URL input
+# Center the URL input with enhanced styling
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    urlTextValue = st.text_input(label="🔗 YouTube URL", placeholder="Paste your YouTube URL here...")
-    if st.button(label="Load Video", use_container_width=True):
+    st.markdown("""
+    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); margin: 20px 0;">
+        <h3 style="color: #2c3e50; margin: 0 0 15px 0; text-align: center;">🔗 Paste Your YouTube URL</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    urlTextValue = st.text_input(
+        label="", 
+        placeholder="https://www.youtube.com/watch?v=...",
+        help="Enter any YouTube video URL to get started"
+    )
+    
+    if st.button(
+        label="🚀 Load Video & Start Chatting", 
+        use_container_width=True,
+        type="primary"
+    ):
         if urlTextValue:
             loadYoutubeURL(urlTextValue)
         else:
