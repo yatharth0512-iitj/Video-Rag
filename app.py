@@ -174,17 +174,6 @@ def loadYoutubeURL(url):
 st.title("🎥 YouTube Video RAG")
 st.markdown("*Transform any YouTube video into an interactive AI assistant*")
 
-# What is RAG section
-st.header("🚀 What is RAG (Retrieval-Augmented Generation)?")
-st.markdown("RAG is an AI technique that combines the power of large language models with external knowledge sources.")
-
-# RAG components in columns
-col1, col2 = st.columns(2)
-with col1:
-    st.info("🔍 **Retrieval**\n\nFinding relevant information from video transcripts")
-with col2:
-    st.info("🧠 **Generation**\n\nAI generates contextual responses")
-
 # How it works section
 st.header("📋 How it works with YouTube videos:")
 col1, col2, col3 = st.columns(3)
