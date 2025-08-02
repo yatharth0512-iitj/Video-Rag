@@ -1,0 +1,11 @@
+streamlit>=1.28.0
+llama-index
+llama-index-llms-huggingface
+llama-index-embeddings-huggingface
+llama-index-vector-stores-qdrant
+qdrant-client
+youtube-transcript-api
+python-dotenv
+huggingface_hub
+torch --index-url https://download.pytorch.org/whl/cpu
+sentence-transformers>=2.6.1
